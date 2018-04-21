@@ -25,7 +25,6 @@ struct fnode_service
     char                        sn[FSN_LENGTH];
     char                        dev_type[FDEV_TYPE_LENGTH];
     fnet_socket_t               socket;
-    fnet_socket_t               unlocker;
     fnet_socket_t               ifaces[256];
     size_t                      ifaces_num;
     fnode_service_state_t       state;
@@ -71,8 +70,6 @@ fnode_service_t *fnode_service_create(char const sn[FSN_LENGTH], char const dev_
 
     fnet_socket_init();
     fnode_service_create_iface_sockets(svc);
-
-    //svc->unlocker
 
     return svc;
 }
@@ -198,12 +195,23 @@ fnode_service_state_t fnode_service_notify_status(fnode_service_t *svc)
     }
 
     return FSVC_PROCESS_COMMANDS;
-    // return FSVC_NOTIFY_STATUS;
 }
 
 fnode_service_state_t fnode_service_process_commands(fnode_service_t *svc)
 {
-    return FSVC_PROCESS_COMMANDS;
+    fnet_socket_t rs, es;
+    size_t rs_num = 0, es_num = 0;
+
+    size_t time_now = fnode_service_time();
+    size_t time_elapsed = time_now - svc->last_cmd_time;
+    size_t time_wait = time_elapsed < svc->keepalive ? svc->keepalive - time_elapsed : 1;
+
+    if (fnet_socket_select(svc->socket, 1, &rs, &rs_num, &es, &es_num, time_wait) && rs_num)
+    {
+        // TODO
+    }
+
+    return FSVC_NOTIFY_STATUS;
 }
 
 bool fnode_service_recv_cmd(fnode_service_t *svc)

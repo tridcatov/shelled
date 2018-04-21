@@ -5,7 +5,7 @@
 
 typedef struct fnode_service fnode_service_t;
 
-typedef void (*fnode_service_cmd_handler_t)(uint32_t, char const *);
+typedef void (*fnode_service_cmd_handler_t)(uint32_t, char const *, uint32_t);
 
 fnode_service_t *fnode_service_create(char const sn[FSN_LENGTH], char const dev_type[FDEV_TYPE_LENGTH]);
 fnode_service_t *fnode_service_retain(fnode_service_t *);

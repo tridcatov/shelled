@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <fnode/service.h>
+#include <string.h>
 
 #define MAX_CMD_LEN 4 * 1024
 
@@ -12,8 +13,11 @@ void makeSound(char const * data) {
   system(cmd_buffer);
 }
 
-void handler(uint32_t cmd, char const * data) {
-  makeSound(data);
+void handler(uint32_t cmd, char const * data, uint32_t size) {
+  char text[size + 1];
+  memcpy(text, data, size);
+  text[size] = 0;
+  makeSound(text);
 }
 
 int main(int argc, char ** argv) {
