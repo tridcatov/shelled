@@ -56,5 +56,6 @@ macro(use_c99)
 endmacro(use_c99)
 
 
-add_subdirectory(snode  snode)
-add_subdirectory(services/alice alice)
+add_subdirectory(snode              snode)
+add_subdirectory(services/alice     alice)
+add_subdirectory(services/test-cocl test-cocl)

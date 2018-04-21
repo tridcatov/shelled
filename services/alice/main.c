@@ -21,8 +21,15 @@ void handler(uint32_t cmd, char const * data, uint32_t size) {
 }
 
 int main(int argc, char ** argv) {
+
+  if (argc < 2)
+  {
+    fprintf(stderr, "Usage: alice SERIAL-NUMBER\n");
+    return -1;
+  }
+
   // Creating service
-  fnode_service_t * service = fnode_service_create("alice007", "TDAC");
+  fnode_service_t * service = fnode_service_create(argv[1], "TDAC");
 
   makeSound("курлы, курлы, курлы, курлы");
   makeSound("курлы, курлы, курлы, курлы");
