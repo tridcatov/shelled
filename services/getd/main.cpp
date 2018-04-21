@@ -20,28 +20,29 @@
 #include "GPIOClass.h"
 #include <fnode/service.h>
 #include <memory>
+#include <pthread.h>
 
 
 using namespace std;
 
-#define LEDS_CNT 4
-#define BTNS_CNT 4
+#define LEDS_CNT 2
+#define BTNS_CNT 2
 #define BTN_RESET_STATE     "1"
 #define BTN_SET_STATE       "0"
 #define LED_RESET_STATE     "0"
 #define LED_SET_STATE       "1"
 
-GPIOClass ledPool[LEDS_CNT] = {GPIOClass("26"),GPIOClass("12"),GPIOClass("16"),GPIOClass("20")};
-const string ledPins[LEDS_CNT] = {"26", "12", "16", "20"};
-GPIOClass btnPool[BTNS_CNT] = {GPIOClass("5"),GPIOClass("6"),GPIOClass("13"),GPIOClass("16")};
-const string btnPins[BTNS_CNT] = {"5", "6", "13", "19"};
+GPIOClass ledPool[LEDS_CNT] = {GPIOClass("26"),GPIOClass("12")};//,GPIOClass("16"),GPIOClass("20")};
+const string ledPins[LEDS_CNT] = {"26", "12"};//, "16", "20"};
+GPIOClass btnPool[BTNS_CNT] = {GPIOClass("5"),GPIOClass("6")};//,GPIOClass("13"),GPIOClass("19")};
+const string btnPins[BTNS_CNT] = {"5", "6"};//, "13", "19"};
 string LedState;
 string BtnState;
       
 void __getPinsState(GPIOClass* pinsPool, const uint32_t size, string& out_state)
 {
     string inputstate;
-    out_state.erase();
+    out_state.clear();
     for(uint32_t i = 0;i < size; i++)
     {
         pinsPool[i].getval_gpio(inputstate);
@@ -51,11 +52,7 @@ void __getPinsState(GPIOClass* pinsPool, const uint32_t size, string& out_state)
 const string& getLedsState()
 {
     static string sState;	
-    __getPinsState(ledPool, LEDS_CNT, sState);
-	for(int i = 0;i < sState.length(); i++)
-	{
-		sState[i] = (sState[i] == '0') ? '1' : '0';
-	}
+    __getPinsState(ledPool, LEDS_CNT, sState);	
     return sState;
 }
 
@@ -63,6 +60,10 @@ const string& getBtnsState()
 {
     static string sState;
     __getPinsState(btnPool, BTNS_CNT, sState);
+	for(int i = 0;i < sState.length(); i++)
+	{
+		sState[i] = (sState[i] == '0') ? '1' : '0';
+	}
     return sState;
 }
 
@@ -85,7 +86,7 @@ void request_handler_clbk(uint32_t cmd, char const * data, uint32_t size)
 void sendBtnsState(fnode_service_t * service, const string& btnsState)
 {
     static string packet;
-    packet.erase();
+    packet.clear();
     packet.append("0");
     packet.append(btnsState);
     while(packet.length() < 9)
@@ -94,18 +95,23 @@ void sendBtnsState(fnode_service_t * service, const string& btnsState)
         fnode_service_notify_state(service, packet.c_str(), packet.length());
 }
 
-void SensorChangeHandler(fnode_service_t * service)
+void* SensorChangeHandler(void* service)
 {
-    if(BtnState.compare(getBtnsState()) != 0)
-    {
-        usleep(20000);
-        const string& unconfirmedState = getBtnsState();
-        if(BtnState.compare(unconfirmedState) != 0)
-        {
-            BtnState.replace(0, unconfirmedState.length(), unconfirmedState);
-            sendBtnsState(service, BtnState);
-        }    
-    }
+	for(;;)
+	{
+		while(BtnState.compare(getBtnsState()) == 0)
+		{
+			usleep(1);
+		}
+		
+		usleep(20000);
+		const string& unconfirmedState = getBtnsState();
+		if(BtnState.compare(unconfirmedState) != 0)
+		{
+			BtnState.replace(0, unconfirmedState.length(), unconfirmedState);			
+			sendBtnsState((fnode_service_t *)service, BtnState);
+		}  
+	}		
     /*
     btnPin->getval_gpio(inputstate); //read state of GPIO17 input pin
         if(inputstate == "0") // if input pin is at state "0" i.e. button pressed
@@ -131,10 +137,10 @@ void SensorChangeHandler(fnode_service_t * service)
 int main(int argc, char** argv) {
 	
 	if (argc < 3)
-	  {
+	{
 		fprintf(stderr, "Usage: getd SERIAL-NUMBER [COCL|RELY]\n");
 		return -1;
-	  }
+	}
 
 
     struct sigaction sig_struct;
@@ -169,15 +175,20 @@ int main(int argc, char** argv) {
         exit(1);
     }
         
-    
+    //оптавляем текущие значения серверу
     const string& state = getBtnsState();
+	BtnState.erase();
     BtnState.replace(0, state.length(), state);
     sendBtnsState(service, BtnState);
     
     fnode_service_reg_handler(service, request_handler_clbk);
+	cout << "Tread is started" << endl;
+	pthread_t periph_control_thread;
+	pthread_create(&periph_control_thread, NULL, SensorChangeHandler, (void*)service);	
+	cout << "Tread is run" << endl;
     while(1)
     {        
-        SensorChangeHandler(service);
+        //SensorChangeHandler(service);
         fnode_service_update(service);
         if(ctrl_c_pressed)
                     {
@@ -192,9 +203,9 @@ int main(int argc, char** argv) {
                         break;
 
                     }
-        usleep(50000);  // wait for 0.5 seconds
+        //usleep(20000);  // wait for 0.05 seconds
 
-    }
+    }	
     fnode_service_release(service);
     cout << "Exiting....." << endl;
     return 0;
