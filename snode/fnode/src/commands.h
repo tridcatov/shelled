@@ -6,6 +6,7 @@
 
 enum
 {
+    FCMD_NVLD = FCMD('N', 'V', 'L', 'D'),
     FCMD_HELO = FCMD('H', 'E', 'L', 'O'),
     FCMD_CONF = FCMD('C', 'O', 'N', 'F'),
     FCMD_PING = FCMD('P', 'I', 'N', 'G'),
@@ -25,8 +26,20 @@ typedef struct
 typedef struct
 {
     char cmd[FCMD_ID_LENGTH];
+    char keepalive[4];
+    char resp_freq[4];
+} fcmd_conf;
+
+typedef struct
+{
+    char cmd[FCMD_ID_LENGTH];
     char sn[FSN_LENGTH];
 } fcmd_ping;
+
+typedef struct
+{
+    char cmd[FCMD_ID_LENGTH];
+} fcmd_pong;
 
 typedef struct
 {
