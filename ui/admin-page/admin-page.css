@@ -1,0 +1,265 @@
+admin-page
+{
+    display:          block;
+    height:           100%;
+    background-color: #fff;
+    overflow:         hidden;
+
+    -ms-user-select:     none;
+    -moz-user-select:    none;
+    -webkit-user-select: none;
+    user-select:         none;
+}
+
+admin-page left-panel
+{
+    display:          inline-block;
+    width:            20%;
+    height:           100%;
+    overflow:         scroll;
+    font-size:        0;
+}
+
+admin-page left-panel label
+{
+    display:          inline-block;
+    font-size:        14px;
+    font-weight:      600;
+}
+
+admin-page left-panel sensors
+{
+    display:          block;
+    margin-left:      20px;
+}
+
+admin-page left-panel sensors digital-sensors
+{
+    display:          block;
+    margin-left:      20px;
+}
+
+admin-page left-panel sensors digital-sensors sensor
+{
+    display:          block;
+    cursor:           pointer;
+}
+
+admin-page left-panel sensors digital-sensors sensor number
+{
+    display:          inline-block;
+    font-size:        14px;
+    font-weight:      400;
+    color:            #888;
+}
+
+admin-page left-panel sensors digital-sensors sensor label
+{
+    display:          inline-block;
+    margin-left:      10px;
+    cursor:           pointer;
+    font-weight:      400;
+}
+
+admin-page left-panel sensors analog-sensors
+{
+    display:          block;
+    margin-left:      20px;
+}
+
+admin-page left-panel sensors analog-sensors sensor
+{
+    display:          block;
+    cursor:           pointer;
+}
+
+admin-page left-panel sensors analog-sensors sensor number
+{
+    display:          inline-block;
+    font-size:        14px;
+    font-weight:      400;
+    color:            #888;
+}
+
+admin-page left-panel sensors analog-sensors sensor label
+{
+    display:          inline-block;
+    margin-left:      10px;
+    cursor:           pointer;
+    font-weight:      400;
+}
+
+admin-page left-panel sensor:hover
+{
+    background-color: #eee;
+}
+
+admin-page left-panel relays
+{
+    display:          block;
+    margin-left:      20px;
+}
+
+
+admin-page left-panel relays digital-relays
+{
+    display:          block;
+    margin-left:      20px;
+}
+
+admin-page left-panel relays digital-relays relay
+{
+    display:          block;
+    cursor:           pointer;
+}
+
+admin-page left-panel relays digital-relays relay number
+{
+    display:          inline-block;
+    font-size:        14px;
+    font-weight:      400;
+    color:            #888;
+}
+
+admin-page left-panel relays digital-relays relay label
+{
+    display:          inline-block;
+    margin-left:      10px;
+    cursor:           pointer;
+    font-weight:      400;
+}
+
+admin-page left-panel relays analog-relays
+{
+    display:          block;
+    margin-left:      20px;
+}
+
+admin-page left-panel relays analog-relays relay
+{
+    display:          block;
+    cursor:           pointer;
+}
+
+admin-page left-panel relays analog-relays relay number
+{
+    display:          inline-block;
+    font-size:        14px;
+    font-weight:      400;
+    color:            #888;
+}
+
+admin-page left-panel relays analog-relays relay label
+{
+    display:          inline-block;
+    margin-left:      10px;
+    cursor:           pointer;
+    font-weight:      400;
+}
+
+admin-page left-panel relay:hover
+{
+    background-color: #eee;
+}
+
+admin-page right-panel
+{
+    display:          inline-block;
+    width:            80%;
+    height:           100%;
+    margin-left:      -5px;
+    font-size:        0;
+    vertical-align:   top;
+    border-left:      1px solid #aaa;
+}
+
+admin-page right-panel .wrapper
+{
+    position:         relative;
+    display:          inline-block;
+    width:            100%;
+    height:           100%;
+    overflow:         hidden;
+    font-size:        14px;
+}
+
+admin-page right-panel .wrapper svg
+{
+    position:         absolute;
+    z-index:          1;
+    pointer-events:   none;
+}
+
+popup
+{
+    position:         absolute;
+    display:          table;
+    left:             0;
+    top:              0;
+    height:           100%;
+    width:            100%;
+    text-align:       center;
+    z-index:          3;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+popup wrapper
+{
+    display:          table-row;
+    height:           100%;
+    width:            20%;
+}
+
+popup-body
+{
+    display:          table-cell;
+    vertical-align:   middle;
+    padding:          20px;
+    width:            100px;
+}
+
+popup-body-content
+{
+    display:          inline-block;
+    padding:          20px;
+    min-width:        100px;
+    background-color: #fff;
+    text-align:       left;
+    border-radius:    5px;
+    box-shadow:       1px 1px 10px 0px #aaa;
+}
+
+popup-body-content textarea
+{
+    display:          block;
+    min-width:        300px;
+    min-height:       200px;
+}
+
+popup-body-content .submit-button
+{
+    margin-top:       12px;
+    padding:          5px 15px;
+    border-radius:    5px;
+    border:           none;
+    cursor:           pointer;
+    box-shadow:       1px 1px 1px 0px #aaa;
+    background-color: #0aa;
+    color:            #fff;
+}
+
+popup-body-content .submit-button:hover
+{
+    background-color: #0bb;
+}
+
+popup-body-content .close-button
+{
+    margin-top:       12px;
+    padding:          5px 15px;
+    border-radius:    5px;
+    border:           none;
+    cursor:           pointer;
+    background:       none;
+    color:            #000;
+}

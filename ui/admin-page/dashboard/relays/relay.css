@@ -1,0 +1,134 @@
+digital_relay
+{
+    display:          inline-block;
+    position:         absolute;
+    margin:           5px;
+    vertical-align:   top;
+    user-select:      none;
+    left:             0;
+    top:              0;
+    border:           1px solid #aaa;
+    background-color: #d8d8d8;
+
+    -ms-user-select:     none;
+    -moz-user-select:    none;
+    -webkit-user-select: none;
+    user-select:         none;
+}
+
+digital_relay ports
+{
+    display:          block;
+    height:           25px;
+    padding:          5px;
+    user-select:      none;
+    text-align:       center;
+    border-bottom:    1px solid #aaa;
+}
+
+digital_relay ports port
+{
+    position:         relative;
+    display:          inline-block;
+    margin:           0 2px;
+    width:            20px;
+    height:           20px;
+    border-radius:    20px;
+    user-select:      none;
+    cursor:           pointer;
+}
+
+digital_relay ports port[state="off"]
+{
+    background-color: #aaa;
+    box-shadow:       1px 1px 3px 0px #5d5a5a;
+}
+
+digital_relay ports port[state="on"]
+{
+    background-color: red;
+    box-shadow:       1px 1px 3px 0px #8e0101;
+}
+
+digital_relay label
+{
+    display:          block;
+    padding:          20px 0;
+    text-align:       center;
+    user-select:      none;
+}
+
+analog_relay
+{
+    position:         absolute;
+    display:          inline-block;
+    padding:          0 5px;
+    margin:           5px;
+    left:             0;
+    top:              0;
+    vertical-align:   top;
+    user-select:      none;
+    border:           1px solid #aaa;
+    background-color: #d8d8d8;
+    
+    -ms-user-select:     none;
+    -moz-user-select:    none;
+    -webkit-user-select: none;
+    user-select:         none;
+}
+
+analog_relay ports
+{
+    display:          block;
+    padding:          0;
+    min-height:       20px;
+    user-select:      none;
+    text-align:       center;
+}
+
+analog_relay ports input
+{
+    position:         relative;
+    display:          inline-block;
+    margin:           0 3px;
+    padding:          0;
+    width:            40px;
+    font-size:        12px;
+    text-align:       left;
+    vertical-align:   top;
+    user-select:      none;
+    border-top:       none;
+    border-left:      1px solid #aaa;
+    border-right:     1px solid #aaa;
+    border-bottom:    1px solid #aaa;
+    background-color: #efefef;
+}
+
+analog_relay port_numbers
+{
+    display:          block;
+    padding:          0;
+    min-height:       20px;
+    text-align:       center;
+    user-select:      none;
+}
+
+analog_relay port_numbers port_number
+{
+    position:         relative;
+    display:          inline-block;
+    margin:           0 3px;
+    width:            40px;
+    height:           20px;
+    user-select:      none;
+    border-left:      1px solid #aaa;
+    border-right:     1px solid #aaa;
+}
+
+analog_relay label
+{
+    display:          block;
+    padding:          20px 0;
+    text-align:       center;
+    user-select:      none;
+}

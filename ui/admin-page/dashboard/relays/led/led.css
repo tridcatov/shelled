@@ -1,0 +1,15 @@
+led_relay
+{
+    display:          inline-block;
+    padding:          15px;
+}
+
+led_relay[state='on']
+{
+    fill:             #FBCE30;
+}
+
+led_relay[state='off']
+{
+    fill:             #AAA;
+}

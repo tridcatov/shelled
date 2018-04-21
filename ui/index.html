@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Shelled</title>
+    <meta charset="utf-8">
+
+    <script src="SVG/SVG.js"></script>
+
+    <script src="admin-page/dashboard/dashboard.js"></script>
+    
+    <script src="admin-page/dashboard/relays/relay.js"></script>
+    <link rel="stylesheet" type="text/css" href="admin-page/dashboard/relays/relay.css">
+
+    <script src="admin-page/dashboard/relays/led/led.js"></script>
+    <link rel="stylesheet" type="text/css" href="admin-page/dashboard/relays/led/led.css">
+
+    <script src="admin-page/dashboard/sensors/sensor.js"></script>
+    <link rel="stylesheet" type="text/css" href="admin-page/dashboard/sensors/sensor.css">
+
+    <script src="admin-page/dashboard/sensors/switch/switch.js"></script>
+    <link rel="stylesheet" type="text/css" href="admin-page/dashboard/sensors/switch/switch.css">
+
+    <link rel="stylesheet" type="text/css" href="css/styles.css">
+</head>
+<body>
+    <admin-page>
+        <left-panel>
+            <label>Датчики</label>
+            <sensors>
+                <label>цифровые</label>
+                <digital-sensors></digital-sensors>
+
+                <label>аналоговые</label>
+                <analog-sensors></analog-sensors>
+            </sensors>
+
+            <label>Исполняющие устройства</label>
+            <relays>
+                <label>цифровые</label>
+                <digital-relays></digital-relays>
+
+                <label>аналоговые</label>
+                <analog-relays></analog-relays>
+            </relays>
+        </left-panel>
+        <right-panel>
+            <div
+                class      = "wrapper"
+                style      = "display: block; width: 100%; height: 100%; position: relative;"
+                ondragover = "event.preventDefault()"
+            ></div>
+        </right-panel>
+    </admin-page>
+
+    <popup dispaly="block" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()">
+        <wrapper>
+            <popup-body>
+                <popup-body-content>
+                    <textarea></textarea>
+                    <button class="submit-button" onclick="saveArrow()">Ok</button>
+                    <button class="close-button" onclick="hidePopup()">Cancel</button>
+                </popup-body-content>
+            </popup-body>
+        </wrapper>
+    </popup>
+
+    <script src="admin-page/admin-page.js"></script>
+    <link rel="stylesheet" type="text/css" href="admin-page/admin-page.css">
+</body>
+</html>
