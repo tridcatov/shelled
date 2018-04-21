@@ -9,7 +9,7 @@ char cmd_buffer[MAX_CMD_LEN];
 const char * cmd_format = "./play.sh \"%s\"";
 
 void makeSound(char const * data) {
-  sprintf(cmd_buffer, cmd_format, data);
+  sprintf(cmd_buffer, cmd_format, data + 1);
   system(cmd_buffer);
 }
 
@@ -30,10 +30,6 @@ int main(int argc, char ** argv) {
 
   // Creating service
   fnode_service_t * service = fnode_service_create(argv[1], "TDAC");
-
-  makeSound("курлы, курлы, курлы, курлы");
-  makeSound("курлы, курлы, курлы, курлы");
-  makeSound("курлы, курлы, курлы, курлы");
 
   if ( !service ) {
     fprintf(stderr, "Failed to create TDAC service\n");

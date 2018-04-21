@@ -2,6 +2,10 @@
 #define FNODE_COMMANDS_H
 #include <fcommon/limits.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define FCMD(a, b, c, d) a | (b << 8) | (c << 16) | (d << 24)
 
 enum
@@ -74,4 +78,9 @@ typedef struct
              <-         DATA
                             VAL[]
  */
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif
