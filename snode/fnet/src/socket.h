@@ -14,6 +14,11 @@ typedef enum
     FNET_SOCK_DGRAM
 } fnet_sock_t;
 
+enum
+{
+    FNET_SOCK_BROADCAST     = 1 << 0
+};
+
 bool            fnet_socket_init();
 void            fnet_socket_uninit();
 fnet_socket_t   fnet_socket_create(fnet_sock_t sock_type);
@@ -31,6 +36,8 @@ bool            fnet_socket_select(fnet_socket_t *sockets,
                                    fnet_socket_t *rs,
                                    size_t *rs_num,
                                    fnet_socket_t *es,
-                                   size_t *es_num);
+                                   size_t *es_num,
+                                   size_t msec);
+size_t          fnet_socket_bind_all(fnet_sock_t sock_type, fnet_socket_t *ifaces, size_t size, int flags);
 
 #endif

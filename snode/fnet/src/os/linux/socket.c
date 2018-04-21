@@ -2,7 +2,14 @@
 #include <fcommon/limits.h>
 #include <fcommon/log.h>
 #include <sys/select.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <ifaddrs.h>
 #include <unistd.h>
+#include <string.h>
+#include <stdio.h>
+#include <net/if.h>
+#include <errno.h>
 
 fnet_socket_t const FNET_INVALID_SOCKET = (fnet_socket_t)~0u;
 
@@ -14,6 +21,14 @@ static int fnet_sock_type2posix(fnet_sock_t sock_type)
         case FNET_SOCK_DGRAM:   return SOCK_DGRAM;
     }
     return -1;
+}
+
+static struct timeval msec2timeval(size_t msec)
+{
+    struct timeval ts;
+    ts.tv_sec = msec / 1000;
+    ts.tv_usec = (msec - ts.tv_sec * 1000) * 1000;
+    return ts;
 }
 
 bool fnet_socket_init()
@@ -29,7 +44,8 @@ bool fnet_socket_select(fnet_socket_t *sockets,
                         fnet_socket_t *rs,
                         size_t *rs_num,
                         fnet_socket_t *es,
-                        size_t *es_num)
+                        size_t *es_num,
+                        size_t msec)
 {
     if (!sockets || !num)   return false;
     if (!rs && !es)         return false;
@@ -59,7 +75,11 @@ bool fnet_socket_select(fnet_socket_t *sockets,
         *es_num = 0;
     }
 
-    int ret = select(nfds + 1, rs ? &readfds : 0, 0, es ? &exceptfds : 0, 0);
+    struct timeval timeout;
+    if (msec != (size_t)-1)
+        timeout = msec2timeval(msec);
+
+    int ret = select(nfds + 1, rs ? &readfds : 0, 0, es ? &exceptfds : 0, msec != (size_t)-1 ? &timeout : 0);
     if (ret < 0)
     {
         FLOG_ERR("Socket waiting was failed");
@@ -217,4 +237,65 @@ bool fnet_socket_recvfrom(fnet_socket_t sock, char *buf, size_t len, size_t *rea
     *read_len = res;
 
     return true;
+}
+
+size_t fnet_socket_bind_all(fnet_sock_t sock_type, fnet_socket_t *ifaces, size_t size, int flags)
+{
+    struct ifaddrs *ifaddr, *ifa;
+
+    if (getifaddrs(&ifaddr) == -1)
+    {
+        FLOG_ERR("getifaddrs failed");
+        return 0;
+    }
+
+    size_t ifaces_num = 0;
+
+    for (ifa = ifaddr; ifa != NULL; ifa = ifa->ifa_next)
+    {
+        if (ifaces_num >= size)
+            break;
+
+        if (!ifa->ifa_addr)
+            continue;
+
+        if (ifa->ifa_addr->sa_family != AF_INET)
+            continue;
+
+        // create socket
+        fnet_socket_t socket = fnet_socket_create(sock_type);
+        if (socket == FNET_INVALID_SOCKET)
+        {
+            FLOG_ERR("Unable to create socket");
+            continue;
+        }
+
+        // set flags
+        if (flags & FNET_SOCK_BROADCAST)
+        {
+            int broadcast_enable = 1;
+            if(setsockopt(socket, SOL_SOCKET, SO_BROADCAST, &broadcast_enable, sizeof(broadcast_enable)) < 0)
+            {
+                FLOG_ERR("broadcast options");
+                fnet_socket_close(socket);
+                continue;
+            }
+        }
+
+        if (bind(socket, (struct sockaddr_in const *)ifa->ifa_addr, sizeof(struct sockaddr_in)) < 0)
+        {
+            FLOG_ERR("Socket bind error");
+            fnet_socket_close(socket);
+            continue;
+        }
+
+        // remember
+        ifaces[ifaces_num++] = socket;
+    }
+
+    freeifaddrs(ifaddr);
+
+    FLOG_INFO("Ifaces: %d\n", ifaces_num);
+
+    return ifaces_num;
 }

@@ -1,7 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <curl/curl.h>
-
 #include <fnode/service.h>
 
 #define MAX_CMD_LEN 4 * 1024
@@ -11,11 +9,11 @@ const char * cmd_format = "./play.sh \"%s\"";
 
 void makeSound(char const * data) {
   sprintf(cmd_buffer, cmd_format, data);
-  system(cmd_buffer); 
+  system(cmd_buffer);
 }
 
 void handler(uint32_t cmd, char const * data) {
-  makeSound(data); 
+  makeSound(data);
 }
 
 int main(int argc, char ** argv) {

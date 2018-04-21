@@ -18,6 +18,7 @@ endif ()
 
 include_directories(
     ../fcommon/include
+    ../fnet/include
 )
 
 add_library(fnode STATIC ${HEADERS} ${SOURCES})
