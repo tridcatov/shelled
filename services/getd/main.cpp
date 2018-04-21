@@ -52,6 +52,10 @@ const string& getLedsState()
 {
     static string sState;	
     __getPinsState(ledPool, LEDS_CNT, sState);
+	for(int i = 0;i < sState.length(); i++)
+	{
+		sState[i] = (sState[i] == '0') ? '1' : '0';
+	}
     return sState;
 }
 
