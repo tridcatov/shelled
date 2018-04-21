@@ -25,6 +25,7 @@ struct fnode_service
     char                        sn[FSN_LENGTH];
     char                        dev_type[FDEV_TYPE_LENGTH];
     fnet_socket_t               socket;
+    fnet_socket_t               unlocker;
     fnet_socket_t               ifaces[256];
     size_t                      ifaces_num;
     fnode_service_state_t       state;
@@ -33,15 +34,13 @@ struct fnode_service
     uint32_t                    resp_freq;
     fnet_address_t              server;
     size_t                      last_cmd_time;
-    char                        node_state[1024];
-    uint32_t                    node_state_size;
-    bool                        node_state_changed;
 };
 
 static fnode_service_state_t fnode_service_init_handler(fnode_service_t *svc);
 static bool                  fnode_service_recv_cmd(fnode_service_t *svc);
 static fnode_service_state_t fnode_service_notify_status(fnode_service_t *svc);
 static fnode_service_state_t fnode_service_process_commands(fnode_service_t *svc);
+static size_t                fnode_service_time();
 
 static void fnode_service_create_iface_sockets(fnode_service_t *svc)
 {
@@ -73,6 +72,8 @@ fnode_service_t *fnode_service_create(char const sn[FSN_LENGTH], char const dev_
     fnet_socket_init();
     fnode_service_create_iface_sockets(svc);
 
+    //svc->unlocker
+
     return svc;
 }
 
@@ -103,17 +104,18 @@ void fnode_service_release(fnode_service_t *svc)
         FLOG_ERR("Invalid interlink");
 }
 
-void fnode_service_set_state(fnode_service_t *svc, char const state[1024], uint32_t size)
+void fnode_service_notify_state(fnode_service_t *svc, char const state[FMAX_DATA_LENGTH], uint32_t size)
 {
     if (svc)
     {
-        if (svc->node_state_size != size
-            || memcmp(svc->node_state, state, size) != 0)
-        {
-            memcpy(svc->node_state, state, size);
-            svc->node_state_size = size;
-            svc->node_state_changed = true;
-        }
+        size_t time_now = fnode_service_time();
+
+        fcmd_node_status cmd = {{ FCMD_CHARS(FCMD_DATA) }};
+        memcpy(cmd.sn,       svc->sn,       sizeof svc->sn);
+        memcpy(cmd.data,     state,         size > FMAX_DATA_LENGTH ? FMAX_DATA_LENGTH : size);
+
+        if (fnet_socket_sendto(svc->socket, (const char *)&cmd, sizeof cmd, &svc->server))
+            svc->last_cmd_time = time_now;
     }
 }
 
@@ -184,16 +186,10 @@ fnode_service_state_t fnode_service_init_handler(fnode_service_t *svc)
 
 fnode_service_state_t fnode_service_notify_status(fnode_service_t *svc)
 {
-    struct timeval tv;
-    gettimeofday(&tv, NULL);
-    size_t time_now = tv.tv_sec * 1000 + tv.tv_usec / 1000;
+    size_t time_now = fnode_service_time();
     size_t time_diff = time_now - svc->last_cmd_time;
 
-    if (svc->node_state_changed && time_diff >= svc->resp_freq)
-    {
-        svc->last_cmd_time = time_now;
-    }
-    else if (time_diff >= svc->keepalive)
+    if (time_diff >= svc->keepalive)
     {
         fcmd_ping cmd = {{ FCMD_CHARS(FCMD_PING) }};
         memcpy(cmd.sn,       svc->sn,       sizeof svc->sn);
@@ -242,4 +238,11 @@ bool fnode_service_recv_cmd(fnode_service_t *svc)
         }
     }
     return false;
+}
+
+size_t fnode_service_time()
+{
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    return tv.tv_sec * 1000 + tv.tv_usec / 1000;
 }
