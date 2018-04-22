@@ -1,3 +1,6 @@
+var websocketAddress = 'ws://10.200.200.27:5000'
+var host = 'http://10.200.200.27/'
+
 function get(url, onsuccess){
     var xhr = new XMLHttpRequest()
 
@@ -351,7 +354,55 @@ function serialize(devices, links){
 }
 
 
+/*
 onDigitalSensor(5, '1234', 'digital sensor', '1')
 onAnalogSensor(5, '1234', 'analog sensor', '2')
 onDigitalRelay(5, '1234', 'digital relay', '3')
-onAnalogRelay(5, '1234', 'analog relay', '4')
+onAnalogRelay(5, '1234', 'analog relay', '4')*/
+
+get(host + 'rest/v1/devices', function(devices){
+    devices = JSON.parse(devices)
+
+    for(var i in devices){
+        var currentDevice = devices[i]
+
+        switch(currentDevice.type){
+            case 'digital sensor': onDigitalSensor(
+                currentDevice.numberOfPins,
+                currentDevice.serialNumber,
+                currentDevice.label,
+                currentDevice.id
+            ); break
+
+            case 'analog sensor': onAnalogSensor(
+                currentDevice.numberOfPins,
+                currentDevice.serialNumber,
+                currentDevice.label,
+                currentDevice.id
+            ); break
+
+            case 'digital relay': onDigitalRelay(
+                currentDevice.numberOfPins,
+                currentDevice.serialNumber,
+                currentDevice.label,
+                currentDevice.id
+            ); break
+
+            case 'analog relay': onAnalogRelay(
+                currentDevice.numberOfPins,
+                currentDevice.serialNumber,
+                currentDevice.label,
+                currentDevice.id
+            ); break
+        }
+    }
+})
+
+/*
+var websocket = new WebSocket(websocketAddress)
+
+websocket.onmessage = function(event){
+    var data = event.data
+
+    console.log('receive: ' + JSON.stringify(data))
+}*/
