@@ -47,12 +47,37 @@ function hidePopup(){
 
 function saveArrow(){
     window.newArrow.text = popup.querySelector('textarea').value
+
+    var link = {
+        source:{
+            device: {
+                id:           window.newArrow.source.element.device.id,
+                serialNumber: window.newArrow.source.element.device.serialNumber
+            },
+            port: window.newArrow.source.targetPort
+        },
+
+        destination:{
+            device: {
+                id:           window.newArrow.destination.element.device.id,
+                serialNumber: window.newArrow.destination.element.device.serialNumber
+            },
+            port: window.newArrow.destination.targetPort
+        },
+
+        script: window.newArrow.text
+    }
+
+    post(host + 'rest/v1/connect', link, function(){
+
+    })
+
     dashboard.arrows.push(window.newArrow)
     dashboard.arrow = createArrow(dashboard.svg)
     dashboard.updateArrows()
     hidePopup()
 
-    serialize(dashboard.selectedDevices, dashboard.arrows)
+    //serialize(dashboard.selectedDevices, dashboard.arrows)
 }
 
 hidePopup()
@@ -353,7 +378,6 @@ function serialize(devices, links){
     return newData
 }
 
-
 /*
 onDigitalSensor(5, '1234', 'digital sensor', '1')
 onAnalogSensor(5, '1234', 'analog sensor', '2')
@@ -398,11 +422,59 @@ get(host + 'rest/v1/devices', function(devices){
     }
 })
 
-/*
+function addDevice(device){
+    switch(device.type){
+        case 'digital sensor': onDigitalSensor(
+            device.numberOfPins,
+            device.serialNumber,
+            device.label,
+            device.id
+            ); break
+
+        case 'analog sensor': onAnalogSensor(
+            device.numberOfPins,
+            device.serialNumber,
+            device.label,
+            device.id
+            ); break
+
+        case 'digital relay': onDigitalRelay(
+            device.numberOfPins,
+            device.serialNumber,
+            device.label,
+            device.id
+            ); break
+
+        case 'analog relay': onAnalogRelay(
+            device.numberOfPins,
+            device.serialNumber,
+            device.label,
+            device.id
+            ); break
+    }
+}
+
+
 var websocket = new WebSocket(websocketAddress)
 
 websocket.onmessage = function(event){
-    var data = event.data
-
-    console.log('receive: ' + JSON.stringify(data))
+    //console.log(event.data)
+    var data = JSON.parse(event.data)
+/*
+{
+    message: 'new_device',
+    data: {
+        id:           '123',
+        numberOfPins: 2,
+        serialNumber: 'sn',
+        label:        '',
+        type:         'analog relay'
+    }
 }*/
+
+    if(data.message == 'new_device'){
+        addDevice(data.data)
+    }
+
+    //console.log('receive: ' + JSON.stringify(data))
+}
