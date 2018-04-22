@@ -1,4 +1,4 @@
-function DigitalRelay(dashboard, numberOfContacts, onchange, x, y){
+function DigitalRelay(dashboard, numberOfContacts, onchange, x, y, sn){
     var self = {}
 
     self.dashboard = dashboard
@@ -75,7 +75,7 @@ function DigitalRelay(dashboard, numberOfContacts, onchange, x, y){
     }
 
     var label = document.createElement('label')
-    label.innerHTML = 'Relay'
+    label.innerHTML = sn + ': Relay'
     element.appendChild(label)
 
     dashboard.setMovable(element)
@@ -85,7 +85,7 @@ function DigitalRelay(dashboard, numberOfContacts, onchange, x, y){
     return self
 }
 
-function AnalogRelay(dashboard, numberOfContacts, onchange, x, y){
+function AnalogRelay(dashboard, numberOfContacts, onchange, x, y, sn){
     var self = {}
 
     self.dashboard = dashboard
@@ -172,7 +172,7 @@ function AnalogRelay(dashboard, numberOfContacts, onchange, x, y){
     }
 
     var label = document.createElement('label')
-    label.innerHTML = 'DAC'
+    label.innerHTML = sn + ': DAC'
     element.appendChild(label)
 
     dashboard.setMovable(element)

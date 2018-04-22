@@ -1,4 +1,4 @@
-function DigitalSensor(dashboard, numberOfContacts, x, y){
+function DigitalSensor(dashboard, numberOfContacts, x, y, sn){
     var self = {}
 
     self.dashboard = dashboard
@@ -9,7 +9,7 @@ function DigitalSensor(dashboard, numberOfContacts, x, y){
     element.setAttribute('state', 'off')
 
     var label = document.createElement('label')
-    label.innerHTML = 'CC Sensor'
+    label.innerHTML = sn + ': CC Sensor'
     element.appendChild(label)
 
     var ports = document.createElement('ports')
@@ -56,7 +56,7 @@ function DigitalSensor(dashboard, numberOfContacts, x, y){
     return self
 }
 
-function AnalogSensor(dashboard, numberOfContacts, x, y){
+function AnalogSensor(dashboard, numberOfContacts, x, y, sn){
     var self = {}
 
     self.dashboard = dashboard
@@ -67,7 +67,7 @@ function AnalogSensor(dashboard, numberOfContacts, x, y){
     element.setAttribute('state', 'off')
 
     var label = document.createElement('label')
-    label.innerHTML = 'ADC'
+    label.innerHTML = sn + ': ADC'
     element.appendChild(label)
 
     var ports = document.createElement('ports')

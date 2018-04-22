@@ -87,21 +87,13 @@ dashboard.onNewArrow = function(newArrow){
     window.newArrow = newArrow
     showPopup()
 }
-
+/*
 function addDigitalSensor(){
     var digitalSensor = DigitalSensor(dashboard, 5)
-    /*
-    setTimeout(function(){
-        digitalSensor.updateState([0, 1, 0, 0, 0])
-    }, 1000)*/
 }
 
 function addAnalogSensor(){
     var analogSensor = AnalogSensor(dashboard, 5)
-/*
-    setTimeout(function(){
-        analogSensor.updateState([0, 1, 20, 30, 50])
-    }, 1000)*/
 }
 
 function addDigitalRelay(){
@@ -114,7 +106,7 @@ function addAnalogRelay(){
     var analogRelay = AnalogRelay(dashboard, 5, function(portNumber, state){
         console.log('change ' + portNumber + ' port state to ' + state)
     })
-}
+}*/
 
 
 var digitalSensorsParent = document.querySelector('admin-page left-panel digital-sensors')
@@ -282,25 +274,25 @@ document.querySelector('.wrapper').ondrop = function(event){
 
     switch(data.type){
         case 'digital sensor':
-            var digitalSensor = DigitalSensor(dashboard, data.numberOfPins, event.offsetX, event.offsetY)
+            var digitalSensor = DigitalSensor(dashboard, data.numberOfPins, event.offsetX, event.offsetY, data.serialNumber)
             digitalSensor.device = data
             data.viewElement = digitalSensor
             break
 
         case 'analog sensor':
-            var analogSensor = AnalogSensor(dashboard, data.numberOfPins, event.offsetX, event.offsetY)
+            var analogSensor = AnalogSensor(dashboard, data.numberOfPins, event.offsetX, event.offsetY, data.serialNumber)
             analogSensor.device = data
             data.viewElement = analogSensor
             break
 
         case 'digital relay':
-            var digitalRelay = DigitalRelay(dashboard, data.numberOfPins, undefined, event.offsetX, event.offsetY)
+            var digitalRelay = DigitalRelay(dashboard, data.numberOfPins, undefined, event.offsetX, event.offsetY, data.serialNumber)
             digitalRelay.device = data
             data.viewElement = digitalRelay
             break
 
         case 'analog relay':
-            var analogRelay = AnalogRelay(dashboard, data.numberOfPins, undefined, event.offsetX, event.offsetY)
+            var analogRelay = AnalogRelay(dashboard, data.numberOfPins, undefined, event.offsetX, event.offsetY, data.serialNumber)
             analogRelay.device = data
             data.viewElement = analogRelay
             break
