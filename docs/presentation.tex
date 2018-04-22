@@ -1,0 +1,124 @@
+\documentclass[14pt]{beamer}
+\usepackage[T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english,russian]{babel}
+\usepackage{amssymb,amsfonts,amsmath,mathtext}
+\usepackage{cite,enumerate,float,indentfirst}
+
+\usetheme{Warsaw}
+\usecolortheme{whale}
+
+\title{\textbf{Безоблачный умный дом} Cloudless smart home}
+\author{Создание инженерной системы и интерфейса управления всеми устройствами
+  современного жилого пространства
+}
+\date{2018}
+
+\begin{document}
+
+\maketitle
+
+\begin{frame}
+  \frametitle{Проблемы и вызовы}
+  \begin{enumerate}
+    \item Управляющее ПО в облаке
+    \item Отсутствие полного контроля за устройствами в доме (машине)
+    \item Сложность настройки и конфигурации, отстутствие автоматизации
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Решение}
+  \begin{enumerate}
+    \item Self Organized System (Plug'n'Play)
+    \item Cloudless --- полная независимость от удаленного ПО (boxed solution)
+    \item Простое управление и конфигурация через UI
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Сценарий демонстрации}
+  \begin{enumerate}
+    \item Автоматическая регистрация устройств в системе
+    \item Управление конфигурациями через UI
+    \item Измерение температуры в помещении и озвучивание через
+      исполняющее устройство (динамик)
+    \item Удаленное включение устройства по событиям от сенсоров
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Отличительные особенности}
+  \begin{enumerate}
+    \item Упрощение управления и конфигурации устройствами умного
+      дома (user friendly)
+    \item Удешевление решения за счет использования дешевых
+      доступных компонент (commodity hardware)
+    \item Просто добавление новых типов устройств, в том числе 
+      3rd party
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Конкурирующие решения}
+  \begin{enumerate}
+    \item https://www.devicehive.com/
+    \item http://creatordev.io/iot-framework
+    \item https://www.mainflux.com/
+    \item https://thinger.io/  
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Технологии}
+  \begin{enumerate}
+    \item Поддержка Plug'n'play, автоматизация подключения и
+      настройки новых устройств
+    \item Объединение устройств независимо от географического
+      положения и доступности интернета (p2p mesh routing)
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Бизнес-модель и монетизация}
+  \begin{enumerate}
+    \item Продажа b2b лицензий на dev-kit
+    \item Продажа готовых решений (разработка, настройка, установка)
+    \item Продажа конечных устройств
+    \item Поддержка, обслуживание, расширение технологической
+      базы за счет новых устройств
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Текущий прогресс}
+  Было:
+  \begin{itemize}
+    \item Raspberry Pi: контроллер
+    \item STM32: плата сенсоров и управляемых устройств
+    \item Linux: ноутбук под управлением ОС linux для развертки
+      виртуальных устройств
+  \end{itemize}
+
+  Стало:
+  \begin{itemize}
+    \item GUI для настройки взаимодействий
+    \item sdk-kit для создания сервисов (железо + виртуальные)
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Команда}
+  \begin{itemize}
+    \item Алексей Кулешов
+    \item Владислав Волков
+    \item Иван Зотов
+    \item Илья Бережной
+    \item Алексей Борисенко
+    \item Анатолий Колодяжный
+  \end{itemize}
+  \vfill
+  \centerline{Спасибо!}
+\end{frame}
+
+\end{document}
