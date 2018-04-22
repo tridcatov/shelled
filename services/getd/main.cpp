@@ -25,6 +25,11 @@
 
 using namespace std;
 
+#define MODE_RELY "RELY"
+#define MODE_COCL "COCL"
+#define MODE_TADC "TADC"
+
+
 #define LEDS_CNT 2
 #define BTNS_CNT 2
 #define BTN_RESET_STATE     "1"
@@ -38,6 +43,25 @@ GPIOClass btnPool[BTNS_CNT] = {GPIOClass("5"),GPIOClass("6")};//,GPIOClass("13")
 const string btnPins[BTNS_CNT] = {"5", "6"};//, "13", "19"};
 string LedState;
 string BtnState;
+
+int getCoreTemp()
+{
+	float temp = 0.;
+    FILE * stream;
+    const int max_buffer = 256;
+    char buffer[max_buffer];
+    
+    stream = popen("/opt/vc/bin/vcgencmd measure_temp 2>&1", "r");	
+    if (stream) {
+		while (!feof(stream))
+			if (fgets(buffer, max_buffer, stream) != NULL) 
+			{					
+				sscanf(buffer, "temp=%f'C", &temp);				
+			}
+		pclose(stream);
+    }
+    return ((int)temp - 30);
+}
       
 void __getPinsState(GPIOClass* pinsPool, const uint32_t size, string& out_state)
 {
@@ -76,7 +100,7 @@ void sig_handler(int sig);
 bool ctrl_c_pressed = false;
 void request_handler_clbk(uint32_t cmd, char const * data, uint32_t size) 
 {    
-    if(size > 2)
+	if(size > 2)
     {
         int led_i = int(data[1]-'0') % LEDS_CNT;
         setLedState(&ledPool[led_i], (data[2] != '0') ? LED_SET_STATE : LED_RESET_STATE);
@@ -111,25 +135,23 @@ void* SensorChangeHandler(void* service)
 			BtnState.replace(0, unconfirmedState.length(), unconfirmedState);			
 			sendBtnsState((fnode_service_t *)service, BtnState);
 		}  
-	}		
-    /*
-    btnPin->getval_gpio(inputstate); //read state of GPIO17 input pin
-        if(inputstate == "0") // if input pin is at state "0" i.e. button pressed
-        {
-                usleep(20000);
-                    btnPin->getval_gpio(inputstate); // checking again to ensure that state "0" is due to button press and not noise
-            if(inputstate == "0")
-            {
-                ledPin->setval_gpio("1"); // turn LED ON
-                
-                while (inputstate == "0"){
-                btnPin->getval_gpio(inputstate);
-                };            
-    
-            }
-        }
-        ledPin->setval_gpio("0");
-    */
+	}    
+}
+
+void* TempChangeHandler(void* service)
+{
+	static string msg="";
+	static char temp_str[32];
+	for(;;)
+	{		
+		sprintf(temp_str, "%d", getCoreTemp());
+		msg.clear();
+		msg.append("0");
+		msg.append(temp_str);
+		//cout << msg << endl;
+		fnode_service_notify_state((fnode_service_t *)service, msg.c_str(), msg.length());
+		usleep(1000000L);				
+	}    
 }
 /*
  * 
@@ -142,7 +164,8 @@ int main(int argc, char** argv) {
 		return -1;
 	}
 
-
+	const string MODE(argv[2]);
+	
     struct sigaction sig_struct;
     sig_struct.sa_handler = sig_handler;
     sig_struct.sa_flags = 0;
@@ -181,14 +204,28 @@ int main(int argc, char** argv) {
     BtnState.replace(0, state.length(), state);
     sendBtnsState(service, BtnState);
     
-    fnode_service_reg_handler(service, request_handler_clbk);
-	cout << "Tread is started" << endl;
-	pthread_t periph_control_thread;
-	pthread_create(&periph_control_thread, NULL, SensorChangeHandler, (void*)service);	
-	cout << "Tread is run" << endl;
+	if(MODE.compare(MODE_RELY) == 0)
+	{
+		fnode_service_reg_handler(service, request_handler_clbk);
+	} 
+	else if(MODE.compare(MODE_COCL) == 0)
+	{
+		cout << "SENS Thread is started" << endl;
+		pthread_t periph_control_thread;
+		pthread_create(&periph_control_thread, NULL, SensorChangeHandler, (void*)service);	
+		cout << "SENS Thread is run" << endl;
+	}
+	else if(MODE.compare(MODE_TADC) == 0)
+	{
+		cout << "TEMP Thread is started" << endl;
+		pthread_t periph_control_thread;
+		pthread_create(&periph_control_thread, NULL, TempChangeHandler, (void*)service);	
+		cout << "TEMP Thread is run" << endl;
+	}
+	
     while(1)
-    {        
-        //SensorChangeHandler(service);
+    {      
+		//SensorChangeHandler(service);
         fnode_service_update(service);
         if(ctrl_c_pressed)
                     {
