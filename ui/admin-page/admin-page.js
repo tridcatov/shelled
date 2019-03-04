@@ -370,11 +370,13 @@ function serialize(devices, links){
     return newData
 }
 
+// Расскоментировать для отладки
 /*
 onDigitalSensor(5, '1234', 'digital sensor', '1')
 onAnalogSensor(5, '1234', 'analog sensor', '2')
 onDigitalRelay(5, '1234', 'digital relay', '3')
-onAnalogRelay(5, '1234', 'analog relay', '4')*/
+onAnalogRelay(5, '1234', 'analog relay', '4')
+*/
 
 get(host + 'rest/v1/devices', function(devices){
     devices = JSON.parse(devices)
